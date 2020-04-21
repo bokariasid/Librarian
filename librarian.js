@@ -224,6 +224,9 @@ program
         let fileUploadResult;
         // s3 upload.
         if(!isEmpty(options.remote_upload) && options.remote_upload.toString() === "1"){
+            if(prefs.enable_s3 !== true || isEmpty(prefs.s3_region)|| isEmpty(prefs.s3_key)|| isEmpty(prefs.s3_secret)){
+                fatalError('Couldn\'t find necessary S3 credentials for remote build upload to S3.');
+            }
           const s3 = new AWS.S3({region: prefs.s3_region, accessKeyId: prefs.s3_key, secretAccessKey: prefs.s3_secret, apiVersion: '2006-03-01'});
           try{fileUploadResult = await uploadFile(s3, pathToFile, prefs.s3_bucket);}
           catch (e) {log("fatal error in uploading the file to s3");fatalError(e);}
